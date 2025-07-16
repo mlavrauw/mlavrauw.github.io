@@ -1,0 +1,747 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>T233</title>
+  <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML" async>
+</script>
+</head>
+<body>
+<center>
+<h2> Determining the rank of tensors in
+\(\mathbb{F}_q^2\otimes\mathbb{F}_q^3\otimes\mathbb{F}_q^3\)</h2>
+(Nour Alnajjarine and Michel Lavrauw)
+</center>
+<p>
+This website contains <a
+href="http://www.gap-system.org">GAP</a>-code to determine the rank
+and the \(G\)-orbit of tensors in the 18-dimensional
+vector space 
+$$V=\mathbb{F}_q^2\otimes\mathbb{F}_q^3\otimes\mathbb{F}_q^3,$$
+over the finite field \({\mathbb{F}}_q\) with \(q\) elements,
+where \(G\leq\) GL\((18,q)\) is the natural group
+preserving the set of tensors of rank one in \(V\).
+
+<p>The accompanying paper <a href="https://link.springer.com/chapter/10.1007/978-3-030-43120-4_22">[Alnajjarine-Lavrauw 2020]</a> [Alnajjarine, N., Lavrauw, M. (2020). Determining the Rank of Tensors in \(\mathbb{F}_q^2\otimes\mathbb{F}_q^3\otimes\mathbb{F}_q^3\). In: Slamanig, D., Tsigaridas, E., Zafeirakopoulos, Z. (eds) Mathematical Aspects of Computer and Information Sciences. MACIS 2019. Lecture Notes in Computer Science(), vol 11989. Springer, Cham.]
+
+
+<p>The algorithms depend on the classification of \(2\times 3 \times
+3\) tensors from <a href="https://www.sciencedirect.com/science/article/pii/S0024379515001494">[Lavrauw-Sheekey 2015]</a>, which is summarised in this
+<a href="table1.html">table</a>. The code is written in the <a
+href="http://www.gap-system.org">GAP</a>-language and uses some
+functionality from the GAP package <a
+href="https://gap-packages.github.io/FinInG/">FinInG</a>. Tensors are represented by
+points in the projective space PG\((V)\).
+
+<h4>List of functions</h4>
+<ul>
+  <li>MatrixOfPoint:=function(x,m,n)</li>
+  <li>RankOfPoint:=function(x,m,n)</li>
+  <li>
+RankDistribution:=function(subspace, m, n)</li>
+  <li>
+CubicalArrayFromPointInTensorProductSpace:=function(point,n1,n2,n3) </li>
+  <li>
+ContractionOfPointInTensorProductSpace:=function(vec,position,point,n1,n2,n3) </li>
+  <li>
+SubspaceOfContractions:=function(position,point,n1,n2,n3)</li>
+  <li>
+Rank1PtsOftheContractionSubspace:=function(Ai,m,n)</li>
+  <li>
+RepO10odd:=function(q)</li>
+  <li>
+AlternativeRepresentationOfFiniteFieldElements:=function(coeff,q)</li>
+  <li>
+RepO10even:=function(q)</li>
+  <li>
+RepO15odd:=function(q)</li>
+  <li>
+RepO15even:=function(q)</li>
+  <li>
+OrbitOfTensor:=function(A)</li>
+  <li>
+RankOfTensor:=function(A)</li>
+</ul>
+
+<h4>The code of the functions</h4>
+Note that you will need to use the GAP package <a
+href="https://gap-packages.github.io/FinInG/">FinInG</a>. We refer to the paper for more details
+about the functions.
+
+<p>
+<code>
+MatrixOfPoint:=function(x,m,n)
+    local list,  i;
+    list:=Coordinates(x);
+    return  List([1..m],i->list{(i-1)*n+[1..n]});
+end;
+</code>
+<p>
+<code>
+RankOfPoint:=function(x,m,n)
+    local list, mat,  i;
+    mat:=MatrixOfPoint(x,m,n);
+    return RankMat(mat);
+end;
+</code>
+<p>
+<code>
+RankDistribution:=function(subspace, m, n)
+    local list;
+    list:=List(Points(subspace),x->RankOfPoint(x,m,n));
+    return Collected(list);
+end;
+</code>
+<p>
+<code>
+CubicalArrayFromPointInTensorProductSpace:=function(point,n1,n2,n3) 
+local vec, array, i, cube, lijst;
+	if not Length(Coordinates(point))=n1*n2*n3 then
+		Error("Incompatible arguments","\n");
+	fi;
+	vec:=Coordinates(point);
+	array:=List([1..n1],i->vec{[1+(n2*n3)*(i-1)..(n2*n3)*i]});
+	cube:=[];
+	for lijst in array do
+		Add(cube,List([1..n2],i->lijst{[1+n3*(i-1)..n3*i]}));
+	od;
+	return cube;
+end;
+</code>
+<p>
+<code>
+ContractionOfPointInTensorProductSpace:=function(vec,position,
+  point,n1,n2,n3) 
+  local fld, q, cube, mat, mats, i, j, k;
+  fld:=BaseField(AmbientSpace(point));
+  q:=Size(fld);
+  cube:=CubicalArrayFromPointInTensorProductSpace(point,n1,n2,n3);
+  if position=1 then
+    mat:=Sum([1..n1],i->vec[i]*cube[i]);
+    return(VectorSpaceToElement(PG(n2*n3-1,q),Flat(mat)));
+  else
+     if position=2 then
+       mats:=[];
+       for j in [1..n2] do
+	   Add(mats,List([1..n1],i->cube[i][j]));  
+       od; 
+       mat:=Sum([1..n2],j->vec[j]*mats[j]);
+       return(VectorSpaceToElement(PG(n1*n3-1,q),Flat(mat)));
+   else 
+	mats:=[];
+       for k in [1..n3] do
+	   Add(mats,List([1..n1],i->TransposedMat(cube[i])[k]));  
+	od;
+	mat:=Sum([1..n3],k->vec[k]*mats[k]);
+	return(VectorSpaceToElement(PG(n1*n2-1,q),Flat(mat)));
+    fi;
+  fi;
+ end;
+</code>
+<p>
+<code>
+SubspaceOfContractions:=function(position,point,n1,n2,n3)
+local nlist,n,q,V,bas,list,vec;
+  nlist:=[n1,n2,n3];
+  n:=nlist[position];
+  q:=Size(BaseField(AmbientSpace(point)));
+  V:=GF(q)^n;
+  bas:=Basis(V);
+  list:=List(bas,
+   vec->ContractionOfPointInTensorProductSpace(vec,position,point,
+   n1,n2,n3));
+  return(Span(list));
+end;
+</code>
+<p>
+<code>
+Rank1PtsOftheContractionSubspace:=function(Ai,m,n)
+	local x, list;
+	list:=[];
+	for x in Points(Ai) do
+		if RankOfPoint(x,m,n)=1 then list:=Union(list,[x]);
+		fi;
+	od;
+	return(list);
+end;
+</code>
+<p>
+<code>
+RepO10odd:=function(q)
+	local eta,v1,v2,ext;
+	eta:=PrimitiveElement(GF(q));
+	v1:=[1,0,0,0,eta,0,0,0,0]*One(GF(q));
+	v2:=[0,1,0,1,0,0,0,0,0]*One(GF(q));
+	ext:=[MatrixOfPoint(VectorSpaceToElement(PG(8,q),v1),3,3),MatrixOfPoint(VectorSpaceToElement(PG(8,q),v2),3,3)];
+	return ext;
+end;
+</code>
+<p>
+<code>
+AlternativeRepresentationOfFiniteFieldElements:=function(coeff,q)
+	local w,list,c;
+	w:=PrimitiveElement(GF(q));
+	list:=[];
+	for c in coeff do
+		if c=Zero(GF(q)) then
+			Add(list,Zero(GF(q)));
+		else
+			Add(list,LogFFE(c,w));
+		fi;
+	od;
+	return List(list,i->w^i);
+end;
+</code>
+<p>
+<code>
+RepO10even:=function(q)
+	local f, coeff, c, u, v, v1, v2, ext;
+  f:=MinimalPolynomial(GF(q),Z(q^2));
+  coeff:=CoefficientsOfUnivariatePolynomial(f);
+  c:=AlternativeRepresentationOfFiniteFieldElements(coeff,q);
+  v:=-1/c[1];
+  u:=c[2];
+  v1:=[v,0,0,0,1,0,0,0,0]*One(GF(q));
+  v2:=[0,1,0,1,u,0,0,0,0]*One(GF(q));
+  ext:=[MatrixOfPoint(VectorSpaceToElement(PG(8,q),v1),3,3),MatrixOfPoint(VectorSpaceToElement(PG(8,q),v2),3,3)];
+	return ext;
+end;
+</code>
+<p>
+<code>
+RepO15odd:=function(q)
+	local eta,v1,v2,ext;
+	eta:=PrimitiveElement(GF(q));
+	v1:=[1,0,0,0,eta,0,0,0,1]*One(GF(q));
+	v2:=[0,1,0,1,0,0,0,0,0]*One(GF(q));
+	ext:=[MatrixOfPoint(VectorSpaceToElement(PG(8,q),v1),3,3),MatrixOfPoint(VectorSpaceToElement(PG(8,q),v2),3,3)];
+	return ext;
+end;
+</code>
+<p>
+<code>
+RepO15even:=function(q)
+        local f, coeff, c, u, v, v1, v2, ext;
+  f:=MinimalPolynomial(GF(q),Z(q^2));
+  coeff:=CoefficientsOfUnivariatePolynomial(f);
+  c:=AlternativeRepresentationOfFiniteFieldElements(coeff,q);
+  v:=-1/c[1];
+  u:=c[2];
+  v1:=[v,0,0,0,1,0,0,0,1]*One(GF(q));
+  v2:=[0,1,0,1,u,0,0,0,0]*One(GF(q));
+  ext:=[MatrixOfPoint(VectorSpaceToElement(PG(8,q),v1),3,3),MatrixOfPoint(VectorSpaceToElement(PG(8,q),v2),3,3)];
+	return ext;
+end;
+</code>
+<p>
+<code>
+OrbitOfTensor:=function(A)
+	local fld, q, A1, A2, A3, R1, R2, R3, orbit, rank, representative, p, x1, x2, M2, v1, v2, B, sv, sm,
+	t, z, y1, y2, z1, z2, p1, Ip1,	p2, Ip2, p3, Ip3, p4, Ip4, V, U, x, y, M1, Mw, w, K, F;
+	fld:=BaseField(AmbientSpace(A));
+	q:=Size(fld);
+	A1:=SubspaceOfContractions(1,A,2,3,3);
+	R1:=RankDistribution(A1,3,3);
+	if q=2 then
+		if R1=[[1,1]] then
+			orbit:=1;
+			representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+			return([orbit, representative]);
+		else if R1=[[2,1]] then
+			orbit:=2;
+			representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+			return([orbit, representative]);
+		else if R1=[[3,1]] then
+			orbit:=3;
+			representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0]],[[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+			return([orbit, representative]);
+		else if R1=[[1,q+1]] then
+			orbit:=4;
+			representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+			return([orbit, representative]);
+		else if R1=[[1,2],[2,q-1]] then
+			orbit:=5;
+			representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+			return([orbit, representative]);
+		else if R1=[[1,1],[2,1],[3,q-1]] then
+			orbit:=8;
+			representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0]]];
+			return([orbit, representative]);
+		else if R1=[[1,1],[3,q]] then
+			orbit:=9;
+			representative:=[[[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[Z(q)^0,0*Z(q),0*Z(q)]],[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0]]];
+			return([orbit, representative]);
+		else if R1=[[2,2],[3,q-1]] then
+			orbit:=13;
+			representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0]]];
+			return([orbit, representative]);
+
+		else if R1=[[3,q+1]] then
+			orbit:=17;
+			K:=GF(q);
+			F:=GF(q^3);
+			w:=PrimitiveElement(F);
+			Mw:=CompanionMat(MinimalPolynomial(K,w));
+			M1:=One(K^[3,3]);
+			x:=VectorSpaceToElement(PG(8,q),Flat(M1));
+			y:=VectorSpaceToElement(PG(8,q),Flat(Mw));
+			representative:=[M1,Mw];
+			return([orbit, representative]);
+		else
+			if R1=[[1,1],[2,q]]  then
+				A2:=SubspaceOfContractions(2,A,2,3,3);
+				A3:=SubspaceOfContractions(3,A,2,3,3);
+				R2:=RankDistribution(A2,2,3);
+				R3:=RankDistribution(A3,2,3);
+				if R2=[[1,1],[2,q]] then
+					if R3=[[1,1],[2,q]] then
+						orbit:=6;
+						representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),Z(q)^0,0*Z(q)],[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+					else orbit:=7;
+						representative:=[[[0*Z(q),0*Z(q),Z(q)^0],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+					fi;
+				else
+					orbit:=7;
+					representative:=[[[0*Z(q),0*Z(q),Z(q)^0],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+				fi;
+				return([orbit, representative]);
+
+			else
+				if R1=[[2,q+1]] then
+					A2:=SubspaceOfContractions(2,A,2,3,3);
+					A3:=SubspaceOfContractions(3,A,2,3,3);
+					R2:=RankDistribution(A2,2,3);
+					R3:=RankDistribution(A3,2,3);
+					if R2=[[2,q+1]] then
+						if R3=[[2,q+1]] then orbit:=10;
+							representative:=RepO10even(q);
+						else orbit:=11;
+							representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0],[0*Z(q),0*Z(q),0*Z(q)]]];
+						fi;
+					else
+
+						if R3=[[2,q+1]] then
+							orbit:=11;
+							representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0],[0*Z(q),0*Z(q),0*Z(q)]]];
+						else if ProjectiveDimension(Span(Rank1PtsOftheContractionSubspace(A2,2,3)))=2 then
+							orbit:=14;
+							representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0]]];
+						else	 orbit:=12;
+							representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),0*Z(q),Z(q)^0],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)]]];
+						fi;
+					fi;
+				fi;
+				return([orbit, representative]);
+			else if R1=[[2,1],[3,q]] then
+				x1:=First(Points(A1),p->RankOfPoint(p,3,3)=3);
+				#x1:=Rank3PtsOftheContractionSubspace(A1,3,3)[1];
+				x2:=First(Points(A1),p->RankOfPoint(p,3,3)=2);
+				#x2:=Rank2PtsOftheContractionSubspace(A1,3,3)[1];
+				M2:=MatrixOfPoint(x2,3,3);
+				B:=Basis(Subspace(GF(q)^3,M2));
+				v1:=List([1..3],i->Coefficients(B,M2[i])[1]);
+				v2:=List([1..3],i->Coefficients(B,M2[i])[2]);
+				t:=TransposedMat([v1])*[BasisVectors(B)[1]]; #y=t
+				z:=TransposedMat([v2])*[BasisVectors(B)[2]];
+				y1:=VectorSpaceToElement(PG(2,q),v1);
+				y2:=VectorSpaceToElement(PG(2,q),BasisVectors(B)[1]);
+				z1:=VectorSpaceToElement(PG(2,q),v2);
+				z2:=VectorSpaceToElement(PG(2,q),BasisVectors(B)[2]);
+				sv:=SegreVariety([PG(2,q),PG(2,q)]);
+				sm:=SegreMap(sv);
+				p1:=Cartesian(Points(y1),Points(y2));
+				Ip1:=ImagesSet(sm,p1)[1];
+				p2:=Cartesian(Points(y1),Points(z2));
+				Ip2:=ImagesSet(sm,p2)[1];
+				p3:=Cartesian(Points(z1),Points(y2));
+				Ip3:=ImagesSet(sm,p3)[1];
+				p4:=Cartesian(Points(z1),Points(z2));
+				Ip4:=ImagesSet(sm,p4)[1];
+				V:=Span([Ip1,Ip2,Ip3,Ip4]);
+				U:=Span(V,x1);
+				#if First(Points(sv),x->x in U and not x in V)=fail then
+				if not ForAny(Points(U),x->not x in V and RankOfPoint(x,3,3)=1) then
+					orbit:=16;
+					representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0]],[[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0],[0*Z(q),0*Z(q),0*Z(q)]]];
+				else
+					orbit:=15;
+					representative:=RepO15even(q);
+				fi;
+				return([orbit, representative]);
+
+
+			fi;
+		fi;
+	fi;
+fi;
+fi;
+fi;
+fi;
+fi;
+fi;
+fi;
+fi;
+fi;
+
+
+
+else
+
+	if R1=[[1,1]] then
+		orbit:=1;
+		representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+		return([orbit, representative]);
+	else if R1=[[2,1]] then
+		orbit:=2;
+		representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+		return([orbit, representative]);
+	else if R1=[[3,1]] then
+		orbit:=3;
+		representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0]],[[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+		return([orbit, representative]);
+	else if R1=[[1,q+1]] then
+		orbit:=4;
+		representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+		return([orbit, representative]);
+	else if R1=[[1,2],[2,q-1]] then
+		orbit:=5;
+		representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+		return([orbit, representative]);
+	else if R1=[[1,1],[2,1],[3,q-1]] then
+		orbit:=8;
+		representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0]]];
+		return([orbit, representative]);
+	else if R1=[[1,1],[3,q]] then
+		orbit:=9;
+		representative:=[[[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[Z(q)^0,0*Z(q),0*Z(q)]],[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0]]];
+		return([orbit, representative]);
+	else if R1=[[2,2],[3,q-1]] then
+		orbit:=13;
+		representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0]]];
+		return([orbit, representative]);
+
+	else if R1=[[3,q+1]] then
+		orbit:=17;
+		K:=GF(q);
+		F:=GF(q^3);
+		w:=PrimitiveElement(F);
+		Mw:=CompanionMat(MinimalPolynomial(K,w));
+		M1:=One(K^[3,3]);
+		x:=VectorSpaceToElement(PG(8,q),Flat(M1));
+		y:=VectorSpaceToElement(PG(8,q),Flat(Mw));
+		representative:=[M1,Mw];
+		return([orbit, representative]);
+	else
+		if R1=[[1,1],[2,q]]  then
+			A2:=SubspaceOfContractions(2,A,2,3,3);
+			A3:=SubspaceOfContractions(3,A,2,3,3);
+			R2:=RankDistribution(A2,2,3);
+			R3:=RankDistribution(A3,2,3);
+			if R2=[[1,1],[2,q]] then
+				if R3=[[1,1],[2,q]] then
+					orbit:=6;
+					representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),Z(q)^0,0*Z(q)],[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+				else orbit:=7;
+					representative:=[[[0*Z(q),0*Z(q),Z(q)^0],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+				fi;
+			else
+				orbit:=7;
+				representative:=[[[0*Z(q),0*Z(q),Z(q)^0],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]]];
+			fi;
+			return([orbit, representative]);
+		else if R1=[[2,3],[3,q-2]] then
+			orbit:=14;
+			representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0]]];
+			return([orbit, representative]);
+		else
+			if R1=[[2,q+1]] then
+				A2:=SubspaceOfContractions(2,A,2,3,3);
+				A3:=SubspaceOfContractions(3,A,2,3,3);
+				R2:=RankDistribution(A2,2,3);
+				R3:=RankDistribution(A3,2,3);
+				if R2=[[2,q+1]] then
+					if R3=[[2,q+1]] then orbit:=10;
+						if 2 in PrimeDivisors(q) then
+							representative:=RepO10even(q);
+						else
+							representative:=RepO10odd(q);
+						fi;
+					else orbit:=11;
+						representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0],[0*Z(q),0*Z(q),0*Z(q)]]];
+					fi;
+				else
+					if R3=[[2,q+1]] then
+						orbit:=11;
+						representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0],[0*Z(q),0*Z(q),0*Z(q)]]];
+					else orbit:=12;
+						representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),0*Z(q)]],[[0*Z(q),0*Z(q),Z(q)^0],[0*Z(q),0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)]]];
+					fi;
+				fi;
+				return([orbit, representative]);
+			else if R1=[[2,1],[3,q]] then
+				x1:=First(Points(A1),p->RankOfPoint(p,3,3)=3);
+				#x1:=Rank3PtsOftheContractionSubspace(A1,3,3)[1];
+				x2:=First(Points(A1),p->RankOfPoint(p,3,3)=2);
+				#x2:=Rank2PtsOftheContractionSubspace(A1,3,3)[1];
+				M2:=MatrixOfPoint(x2,3,3);
+				B:=Basis(Subspace(GF(q)^3,M2));
+				v1:=List([1..3],i->Coefficients(B,M2[i])[1]);
+				v2:=List([1..3],i->Coefficients(B,M2[i])[2]);
+				t:=TransposedMat([v1])*[BasisVectors(B)[1]]; #y=t
+				z:=TransposedMat([v2])*[BasisVectors(B)[2]];
+				y1:=VectorSpaceToElement(PG(2,q),v1);
+				y2:=VectorSpaceToElement(PG(2,q),BasisVectors(B)[1]);
+				z1:=VectorSpaceToElement(PG(2,q),v2);
+				z2:=VectorSpaceToElement(PG(2,q),BasisVectors(B)[2]);
+				sv:=SegreVariety([PG(2,q),PG(2,q)]);
+				sm:=SegreMap(sv);
+				p1:=Cartesian(Points(y1),Points(y2));
+				Ip1:=ImagesSet(sm,p1)[1];
+				p2:=Cartesian(Points(y1),Points(z2));
+				Ip2:=ImagesSet(sm,p2)[1];
+				p3:=Cartesian(Points(z1),Points(y2));
+				Ip3:=ImagesSet(sm,p3)[1];
+				p4:=Cartesian(Points(z1),Points(z2));
+				Ip4:=ImagesSet(sm,p4)[1];
+				V:=Span([Ip1,Ip2,Ip3,Ip4]);
+				U:=Span(V,x1);
+				if not ForAny(Points(U),x->not x in V and RankOfPoint(x,3,3)=1) then
+				#if First(Points(sv),x->x in U and not x in V)=fail then
+					orbit:=16;
+					representative:=[[[Z(q)^0,0*Z(q),0*Z(q)],[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0]],[[0*Z(q),Z(q)^0,0*Z(q)],[0*Z(q),0*Z(q),Z(q)^0],[0*Z(q),0*Z(q),0*Z(q)]]];
+				else
+					orbit:=15;
+					if 2 in PrimeDivisors(q) then
+						representative:=RepO15even(q);
+					else
+						representative:=RepO15odd(q);
+					fi;
+
+				fi;
+				return([orbit, representative]);
+
+
+			fi;
+		fi;
+	fi;
+fi;
+fi;
+fi;
+fi;
+fi;
+fi;
+fi;
+fi;
+fi;
+fi;
+
+fi;
+end;
+</code>
+<p>
+<code>
+
+RankOfTensor:=function(A)
+	local fld, q, O;
+  fld:=BaseField(AmbientSpace(A));
+  q:=Size(fld);
+  O:=OrbitOfTensor(A)[1];
+	if O=1 then
+	return(1);
+	 else if O=2 then
+		    return(2);
+	   else if O=3 then
+	  	    return(3);
+	     else if O=4 then
+	     	    return(2);
+	       else if O=5 then
+	        	  return(2);
+        	else if O=6 then
+	            	return(3);
+            else if O=7 then
+		             return(3);
+	            else if O=8 then
+	            	   return(3);
+	               else if O=9 then
+	                  	return(4);
+	                else if O=10 then
+	                	   return(3);
+                    	else if O=11 then
+	                    	   return(3);
+                       	else if O=12 then
+	                       	   return(4);
+	                         else if O=13 then
+		                            return(4);
+                           	else if O=14 then
+	                              	return(3);
+	                              else if O=15 then
+	                                 	return(4);
+                                 	else if O=16 then
+	                                    	return(4);
+	                                   else if O=17 then
+                                            if q=2 then
+	                                        	return(5);
+                                          else
+	                                      	return(4);
+                                            fi;
+                                          fi;
+                                       fi;
+                                    fi;
+                                  fi;
+                                fi;
+                              fi;
+                            fi;
+                          fi;
+                        fi;
+                      fi;
+                    fi;
+                  fi;
+                fi;
+              fi;
+            fi;
+          fi;
+        fi;
+     end;
+</code>
+<h4>Computations</h4>
+<ul>
+<li>Example 1:</li>
+<p>
+<code>
+<p>gap> q:=97^2;
+<p>9409
+<p>gap> sv:=SegreVariety([PG(1,q),PG(2,q),PG(2,q)]);
+<p>Segre Variety in ProjectiveSpace(17, 9409)
+<p>gap>  pg:=AmbientSpace(sv);
+<p>ProjectiveSpace(17, 9409)
+<p>gap>  N:=VectorSpaceToElement(pg,[Z(q)^0,Z(q)^46,Z(q)^29,Z(q)^59,Z(q)^43,Z(q)^55,Z(q)^24,Z(q)^36,Z(q)^22,Z(q)^11,Z(q)^18,Z(q)^64,Z(q)^77<p>,Z(q)^0,Z(q)^50,Z(q)^62,Z(q)^89,Z(q)^93]);
+<p> <a point in ProjectiveSpace(17, 9409)>
+<p>gap>  RankOfTensor(N);
+<p>3
+<p>gap>  time;
+<p>1422
+<p>gap> OrbitOfTensor(N);
+<p>[ 14, [ [ [ Z(97)^0, 0*Z(97), 0*Z(97) ], [ 0*Z(97), Z(97)^0, 0*Z(97) ], [ 0*Z(97), 0*Z(97), 0*Z(97) ] ],
+<p>      [ [ 0*Z(97), 0*Z(97), 0*Z(97) ], [ 0*Z(97), Z(97)^0, 0*Z(97) ], [ 0*Z(97), 0*Z(97), Z(97)^0 ] ] ] ]
+<p>gap> time;
+<p>1500
+
+</ul>
+</code>
+<ul>
+<p>
+<li>Example 2:</li>
+<code>
+<p>gap>  q:=7919;
+<p>7919
+<p>gap>  sv:=SegreVariety([PG(1,q),PG(2,q),PG(2,q)]);
+<p>Segre Variety in ProjectiveSpace(17, 7919)
+<p>gap>  pg:=AmbientSpace(sv);
+<p>ProjectiveSpace(17, 7919)
+<p>gap>  R:=Random(Points(pg));
+<p><a point in ProjectiveSpace(17, 7919)>
+<p>gap>  RankOfTensor(R);
+<p>4
+<p>gap>  time;
+<p>1344
+<p>gap>  OrbitOfTensor(R);
+<p>[ 17,
+<p>  [ [ [ Z(7919)^0, 0*Z(7919), 0*Z(7919) ], [ 0*Z(7919), Z(7919)^0, 0*Z(7919) ],
+<p>          [ 0*Z(7919), 0*Z(7919), Z(7919)^0 ] ],
+<p>     [ [ 0*Z(7919), 0*Z(7919), Z(7919) ], [ Z(7919)^0, 0*Z(7919), Z(7919)^1049 ]
+<p>            , [ 0*Z(7919), Z(7919)^0, 0*Z(7919) ] ] ] ]
+<p>gap>  time;
+<p>1250
+<p>gap>  Display(R);
+<p>[Z(7919)^0,Z(7919)^1467,Z(7919)^3355,Z(7919)^981,Z(7919)^1933,Z(7919)^3595,
+<p>Z(7919)^2337,Z(7919)^5833,Z(7919)^1841,Z(7919)^5343,Z(7919)^2667,Z(7919)^4300,
+<p>Z(7919)^6527,Z(7919)^2440,Z(7919)^6052,Z(7919)^5542,Z(7919)^1069,Z(7919)^5135,]
+</ul>
+</code>
+
+<ul>
+<p>
+<li>Example 3:</li>
+<code>
+<p>gap> q:=431; 
+<p>431 
+<p>gap> sv:=SegreVariety([PG(1,q),PG(2,q),PG(2,q)]);
+<p>Segre Variety in ProjectiveSpace(17, 431)
+<p>gap> pg:=AmbientSpace(sv);
+<p>ProjectiveSpace(17, 431)
+<p>gap> O:=VectorSpaceToElement(pg,[Z(431)^0,Z(431)^10,Z(431)^248,Z(431)^36,Z(431)^150,Z(431)^61,Z(431)^302,Z(431)^338,
+<p>> Z(431)^286,Z(431)^50,Z(431)^125,Z(431)^358,Z(431)^7,Z(431)^55,Z(431)^13,Z(431)^97,Z(431)^167,Z(431)^142]);
+<p><a point in ProjectiveSpace(17, 431)>
+<p>gap> RankOfTensor(O);
+<p>4
+<p>gap> time;
+<p>78
+<p>gap> OrbitOfTensor(O)[1];
+<p> 17
+<p>gap> time;
+<p> 78
+</ul>
+</code>
+<p>
+<ul>
+<li>Example 4:</li>
+<code>
+<p>gap> q:=2557;
+<p>2557
+<p>gap> sv:=SegreVariety([PG(1,q),PG(2,q),PG(2,q)]);
+<p>Segre Variety in ProjectiveSpace(17, 2557)
+<p>gap> pg:=AmbientSpace(sv);
+<p>ProjectiveSpace(17, 2557)
+<p>B:=VectorSpaceToElement(pg,[Z(2557)^0,Z(2557)^392,Z(2557)^672,Z(2557)^200,Z(2557)^77,Z(2557)^1551,Z(2557)^966,
+<p>Z(2557)^632,Z(2557)^1379,Z(2557)^1351,Z(2557)^1838,Z(2557)^508,Z(2557)^1146,
+<p>Z(2557)^1334,Z(2557)^2348,Z(2557)^898,Z(2557)^1238,Z(2557)^504]);
+<p>gap> RankOfTensor(B);
+<p>3
+<p>gap>  time;
+<p>390
+<p>gap> OrbitOfTensor(B)[1];
+<p>14
+<p>gap> time;
+<p>375
+</ul>
+</code>
+<ul>
+<li> Example 5:</li>
+<code>
+<p>gap>  q:=13441;
+<p>13441
+<p>gap>  sv:=SegreVariety([PG(1,q),PG(2,q),PG(2,q)]);
+<p>Segre Variety in ProjectiveSpace(17, 13441)
+<p>gap>  pg:=AmbientSpace(sv);
+<p>ProjectiveSpace(17, 13441)
+<p>gap>  R:=Random(Points(pg));
+<p><a point in ProjectiveSpace(17, 13441)>
+<p>gap>  RankOfTensor(R);
+<p>4
+<p>gap>  time;
+<p>2125
+<p>gap>  OrbitOfTensor(R);
+<p>[ 17,
+<p>[
+<p>     [ [ Z(13441)^0, 0*Z(13441), 0*Z(13441) ],
+<p>          [ 0*Z(13441), Z(13441)^0, 0*Z(13441) ],
+<p>         [ 0*Z(13441), 0*Z(13441), Z(13441)^0 ] ],
+<p>      [ [ 0*Z(13441), 0*Z(13441), Z(13441) ],
+<p>          [ Z(13441)^0, 0*Z(13441), Z(13441)^2008 ],
+<p>          [ 0*Z(13441), Z(13441)^0, 0*Z(13441) ] ] ] ]
+<p>gap>  time;
+<p>2031
+<p>gap>  Display(R);
+<p>[Z(13441)^0,Z(13441)^4930,Z(13441)^470,Z(13441)^4484,Z(13441)^12862,Z(13441)^
+<p>5473,Z(13441)^12900,Z(13441)^1837,Z(13441)^8726,Z(13441)^8652,Z(13441)^12935,
+<p>Z(13441)^682,Z(13441)^4485,Z(13441)^3830,Z(13441)^7525,Z(13441)^7636,Z(13441)^
+<p>5937,Z(13441)^9934,]
+</ul>
+</code>
+<p>
+</body>
+</html>
+
