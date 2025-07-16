@@ -1,0 +1,399 @@
+ \documentclass[12pt]{amsart}
+ \pagestyle{plain}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{amscd}
+\usepackage{pdfsync}
+
+\newtheorem{theorem}{\sc Theorem}[section]
+\newtheorem{lemma}[theorem]{\sc Lemma}
+\newtheorem{cor}[theorem]{\sc Corollary}
+\newtheorem{prop}[theorem]{\sc Proposition}
+\newtheorem{conj}[theorem]{\sc Conjecture}
+\newtheorem{example}[theorem]{\sc Example}
+\newtheorem{remark}[theorem]{\sc Remark}
+\newtheorem{definition}[theorem]{\sc Definition}
+
+\def\F{\mathbb{F}}
+\def\PG{\mathrm{PG}}
+\def\S{\mathbb{S}}
+\def\U{\mathcal{U}}
+\def\W{\mathcal{W}}
+\def\D{\mathcal{D}}
+\def\GL{\mathrm{GL}}
+\def\N{\mathbb{N}}
+
+\begin{document}
+
+\title{Finite semifields with a large nucleus and higher secant varieties to Segre varieties}
+\author{Michel Lavrauw}\thanks{This research was supported by the Fund for 
+Scientific Research - Flanders (FWO)}
+\date{\today}
+\maketitle
+\begin{abstract}
+In \cite{BEL} a geometric construction was given of a finite semifield from a certain configuration of two subspaces with respect to a Desarguesian spread in a finite-dimensional vector space over a finite field. Moreover, it was proved that any finite semifield can be obtained in this way.
+In \cite{Lavrauw2008} we proved that the configuration needed for the geometric construction given in \cite{BEL} for finite semifields is equivalent with an $(n-1)$-dimensional subspace skew to a determinantal hypersurface in $\PG(n^2-1,q)$, and provided an answer to the isotopism problem in \cite{BEL}. In this paper we give a generalisation of the BEL-construction using linear sets, and then concentrate on this configuration and the isotopism problem for semifields with nuclei that are larger than its center.
+\end{abstract}
+\section{Finite semifields}
+A {\it finite semifield} $\mathbb S$ is a finite division algebra, which is not necessarily associative, i.e.,  an algebra with at least two elements, and two binary operations $+$ and $\circ$, satisfying the following axioms:
+\begin{itemize}
+\item[(S1)] $({\mathbb{S}},+)$ is a group with identity element $0$;
+\item[(S2)] $x\circ(y+z) =x\circ y + x\circ z$ and $(x+y)\circ z = x\circ z + y 
+\circ z$, for all $x,y,z \in {\mathbb{S}}$;
+\item[(S3)] $x\circ y =0$ implies $x=0$ or $y=0$; 
+\item[(S4)] $\exists 1 \in {\mathbb{S}}$ such that $1\circ x = x \circ 1 = x$, for all $x \in {\mathbb{S}}$;
+\end{itemize} 
+A finite field is of course a trivial example of a semifield. The first non-trivial examples of semifields were constructed by Dickon in \cite{Dickson1906}. One easily shows that the additive group of a semifield is elementary abelian, and the additive order of the elements of $\mathbb S$ is called the {\it characteristic} of $\mathbb S$. Contained in a semifield are the following important substructures, all of which are isomorphic to a finite field. The {\it left nucleus} ${\mathbb{N}}_l({\mathbb{S}})$, the {\it middle nucleus} ${\mathbb{N}}_m({\mathbb{S}})$, and the {\it right nucleus} ${\mathbb{N}}_r({\mathbb{S}})$ are defined as follows:
+\begin{eqnarray}
+{\mathbb{N}}_l({\mathbb{S}}):=\{x~:~ x \in {\mathbb{S}} ~|~ x \circ (y\circ z)=(x\circ y)\circ z, ~\forall y,z \in {\mathbb{S}}\}
+\end{eqnarray}
+\begin{eqnarray}
+{\mathbb{N}}_m({\mathbb{S}}):=\{y~:~ y \in {\mathbb{S}} ~|~ x \circ (y\circ z)=(x\circ y)\circ z, ~\forall x,z \in {\mathbb{S}}\}
+\end{eqnarray}
+\begin{eqnarray}
+{\mathbb{N}}_r({\mathbb{S}}):=\{z~:~ z \in {\mathbb{S}} ~|~ x \circ (y\circ z)=(x\circ y)\circ z, ~\forall x,y \in {\mathbb{S}}\}
+\end{eqnarray}
+The intersection of the {\it associative center} ${\mathbb{N}}({\mathbb{S}})$ (the intersection of the three nuclei) and the commutative center is called the {\it center} of $\mathbb S$ and denoted by $C({\mathbb{S}})$. 
+
+If $\mathbb S$ is an $n$-dimensional algebra over the field ${\mathbb F}$, and $\{e_1,\ldots, e_n\}$ is an $\mathbb F$-basis for $\mathbb S$, then the multiplication can be written in terms of the multiplication of the $e_i$, i.e., if $x=x_1e_1+\ldots + x_ne_n$ and $y=y_1e_1+\ldots + y_ne_n$, with $x_i,y_i\in {\mathbb F}$, then 
+\begin{eqnarray}
+x\circ y =\sum_{i,j=1}^{n}x_iy_je_i\circ e_j = \sum_{i,j=1}^{n}x_iy_j \left (\sum_{k=1}^n a_{ijk} e_k\right )
+\end{eqnarray}
+for certain $a_{ijk} \in {\mathbb F}$, called the {\it structure constants} of $\mathbb S$ with respect to the basis $\{e_1,\ldots, e_n\}$.
+In \cite{Knuth1965} Knuth noted that the action, of the symmetric group $S_3$, on the indices of the structure constants gives rise to another five semifields starting from one semifield $\mathbb S$. This set of at most six semifields is called the {\it $S_3$-orbit} of $\mathbb S$, and consists of the semifields $\{{\mathbb S},{\mathbb S}^{(12)},{\mathbb S}^{(13)},{\mathbb S}^{(23)},{\mathbb S}^{(123)},{\mathbb S}^{(132)}\}$.
+
+The study of semifields was stimulated by the connection with projective planes and in this context the following notion of isotopism arose. An {\it isotopism} between the two semifields $\S$ and $\hat{\S}$ is a triple $(F,G,H)$ of non-singular linear transformations from $\S$ to $\hat{\S}$ such that $x^F\hat{\circ} y^G=(x\circ y)^H$, for all $x,y\in \S$. In this case the semifields $\S$ and $\hat{\S}$ are called isotopic. The set of semifields isotopic to a given semifield $\S$ is called the {\it isotopism class} of $\S$ and is denoted by $[\S]$.
+In the next section we give the necessary preliminaries needed for Section 3, where we generalise the geometric construction given in \cite{BEL}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Semifield spreads, Desarguesian spreads and linear sets}
+
+Let $\PG(V)$ denote the projective space induced by the vector space $V$. If we want to specify the dimension $d$ and the field $\F$ of scalars, then we write $V(d,\F)$ (or $V(d,q)$ if $\F = \F_q$, the finite field of order $q$), and similarly for the corresponding projective space $\PG(V)$, we write $\PG(d-1,\F)$ (or $\PG(d-1,q)$). We denote the colleation group of a projective space $\PG(d-1,\F)$ (resp. $\Sigma$) by ${\mathrm{P\Gamma L}}(d,\F)$ (resp. ${\mathrm{P\Gamma L}}(\Sigma)$). 
+
+A {\it spread} of $V=V(d,q)$ is a set $\mathcal S$ of subspaces of $V$, all of the same dimension $d'$, $1\leq d' \leq d$, such that every non-zero vector of $V$ is contained in exactly one of the elements of $\mathcal S$. It follows that $d'$ divides $d$ and that $|{\mathcal S}|=(q^d-1)/(q^{d'}-1)$. A trivial example of a spread of $V$ is the set of all subspaces of dimension 1 of $V$. In the case that $d$ is even and $d'=d/2$ we call a spread of $V$ a {\it semifield spread} if there exists an element $S$ of this spread and a group $G$ of semilinear automorphisms of $V$ with the property that $G$ fixes $S$ pointwise and acts transitively on the other elements of the spread. Spreads play a key role in the theory of translation planes due to the Andr{\'e}-Bruck-Bose construction. The translation planes corresponding to semifield spreads are called {\it semifield planes}.
+
+The semifield spread $\mathcal S(\S)$ of $\PG(2n-1,q)$ corresponding to the semifield $\S$ of order $q^n$, with multiplication given by $x\circ y$ and left nucleus $\F_q$, consists of the subspace $S_\infty=\{(0,y)~:~ y \in \F_{q^n}^*\}$, together with the subspaces
+$$
+S_x=\{(y,y\circ x)~:~y \in \F_{q^n}^*\}, x \in \F_{q^n}.
+$$
+
+
+Let ${\mathbb F}_{q^n}$ be the finite field of $q^n$ elements, let ${\mathbb F}_q$ be the subfield of $q$ elements and assume $n\geq 2$. Consider $V(d,q^n)$ as a vector space of dimension $dn$ over ${\mathbb F}_q$ and consider the spread of subspaces of dimension $n$ over ${\mathbb F}_q$ arising from the spread of subspaces of dimension $1$ over ${\mathbb F}_{q^n}$. Such a spread (i.e. arising from a spread of subspaces of  dimension 1 over some extension field) is called a {\it Desarguesian spread}. A Desarguesian spread has the property that it induces a spread in every subspace spanned by elements of the spread.
+All of the above notions, defined in terms of vector spaces, can also be defined in terms of projective spaces. In this paper we will use the same terminology for both points of view.
+
+The correspondence between the points of the projective space over $\F_{q^n}$ and the elements of the Desarguesian $(n-1)$-spread $\D$ in $\PG(dn-1,q)$ is sometimes referred to as {\it field reduction}. Once this correspondence is established we will often consider the set of spreadelements intersecting a given subspace or subset $U$, and we use the following notation:
+$$
+B_\D(U):=\{R\in \D ~:~ R\cap U \neq \emptyset\}.
+$$
+If there is no confusion possible we write $B(U)$ instead of $B_\D(U)$, and we will often identify the elements of $\D$ with the points of $\PG(d-1,q)$. By doing so, each subset $U$ of $\PG(dn-1,q^n)$ induces a set $B(U)$ of points in $\PG(d-1,q^n)$. 
+
+A set of points $L$ in $PG(r-1,q_0)$ is called a {\it linear set} if there exists a subspace $U$ in $PG(rt-1,q)$, for some $t\geq 1$, $q^t=q_0$, such that $L=B(U)$ is the set of points corresponding to the elements of a Desarguesian $(t-1)$-spread of $PG(rt-1,q)$ intersecting $U$. If we want to specify the field over which $L$ is linear we call $L$ an {\it ${\mathbb{F}}_q$-linear set}. The same notation and terminology is used when $U$ is a subspace of the vector space $V(rt,q)$ instead of a projective subspace. If moreover we want to mention the dimension of $U$, we call $B(U)$ a linear set {\it of rank $d$} or {\it of dimension $d-1$}, if $U$ is a $(d-1)$-dimensional subspace of $\PG(rt-1,q)$. Lunardon \cite{Lunardon1998} was one of the first to give importance to these linear sets, and in the last ten years linear sets have played an important role in Finite Geometry, for an overview of applications and connections we refer to \cite{Polverino200*}. The algebraic connection between linear sets and finite semifields has been succesfully used in recent years, see e.g. \cite{CaPoTr2004}, \cite{MaPoTr2007}. In the next section we will give a geometric construction of finite semifields starting from a linear set.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{A generalisation of the BEL-construction}
+
+In this section we generalise the geometric construction for semifields given in \cite{BEL} starting from a configuration of two subspaces with respect to a Desarguesian spread to a geometric construction starting from a linear set and a subspace. Another difference with the construction given in \cite{BEL} is that now we do not start with a fixed Desarguesian spread $\D$. We only use geometric properties of $\D$ in the proof and different choices of $\D$ may give different semifields. Because of this approach the spread $\D$ should be included in the notation of the obtained semifield and of the semifield spread. This is why in what follows we write $\S(\D,U,W)$ instead of the notation $\S(U,W)$ used in \cite{BEL}.
+
+First we recall the BEL-construction as given in \cite{BEL}. Let $U$ be a subspace of dimension $n-1$, $W$ a subspace of dimension $rn-n-1$ in $\Sigma:=\PG(rn-1,q)$, and $\D$ a Desarguesian $(n-1)$-spread in $\Sigma$, such that no element of $\D$ intersects both $W$ and $U$. In \cite{BEL} it was shown that this configuration of subspaces gives rise to a semifield $\S(\D,U,W)$ of order $q^n$, corresponding to the semifield spread ${\mathcal{S}}(\D,U,W)$ constructed as follows.
+\begin{itemize}
+\item[(a)] Embed $\Sigma$ in $\Lambda \cong \PG(rn+n-1,q)$ and extend $\D$ to a Desarguesian spread $\D_1$ of $\Lambda$.
+\item[(b)] Let $A$ be a $n$-dimensional subspace of $\Lambda$ intersecting $\Sigma$ in $U$.
+\item[(c)] Let ${\mathcal{S}}(U,W)$ be the set of subspaces in the quotient space $\Lambda / W$ defined by $A$ in the following way:
+$$
+{\mathcal{S}}(\D,U,W):=\{\langle R,W\rangle /W~:~R\in \D_1, R\cap A \neq \emptyset \}.
+$$
+\end{itemize}
+
+
+
+Now we extend this to a geometric construction of a semifield spread starting from a linear set $L$ and subspace $W$ instead of two subspaces $U$ and $W$.
+Let $L=B(U)$ be an $\F_q$-linear set of $\Sigma_1:=\PG(rn-1,q^s)$ of rank $ns$, $s\geq 1$, $r\geq 2$, and let $W$ be a subspace of $\Sigma_1$ of dimension $rn-n-1$, and $\D$ a Desarguesian $(n-1)$-spread of $\Sigma_1$, such that no element of $\D$ intersects both $L$ and $W$. We will show that this configuration gives rise to a semifield of order $q^{ns}$. For future reference we call a triple $(\D,U,W)$ satisfying the above properties a {\it BEL-configuration}.
+The construction of the semifield spread goes as follows
+
+\begin{itemize}
+\item[(i)] Embed $\Sigma_1$ in $\Lambda_1 \cong \PG(rn+n-1,q^s)$ and extend $\D$ to a Desarguesian $(n-1)$-spread $\D_1$ of $\Lambda_1$.
+\item[(ii)] Let $L'=B(U')$, $U\subset U'$, be an $\F_q$-linear set of $\Lambda_1$ of rank $ns+1$, such that $L'\cap \Sigma_1 = L$.
+\item[(iii)] Let ${\mathcal S}(\D,U,W)$ be the set of subspaces defined by $L'$ in the quotient geometry $\Lambda_1/W \cong \PG(2n-1,q^s)$ of $W$, in the following way:
+$$
+{\mathcal S}(\D,U,W)=\{\langle R,W\rangle/W ~:~R\in \D_1, R\cap L' \neq \emptyset\}.
+$$
+\end{itemize}
+
+\begin{theorem}\label{thm:main}
+The set ${\mathcal S}(\D,U,W)$ is a semifield spread of $\PG(2n-1,q^s)$.
+\end{theorem}
+\begin{proof}
+Consider the Desarguesian $(s-1)$-spread $\D_2$ of $\Lambda_2 \cong \PG(rns+ns-1,q)$, obtained by considering the points of $\Lambda_1$ as subspaces over $\F_q$ (i.e. by field reduction). Recall that if $T$ is a subset of $\Lambda_i$, then
+$$
+B_{\D_i}(T):=\{R\in \D_i ~:~ R\cap T \neq \emptyset\},
+$$
+If there is no confusion, then we identify the elements of $\D_2$ with the points of $\Lambda_1$, and the elements of $\D_1$ with the points of $\PG(r,q^{ns})$.
+Let $\Sigma_2$ denote the $(rns-1)$-dimensional subspace of $\Lambda_2$ corresponding to $\Sigma_1$, i.e., $B_{\D_2}(\Sigma_2)=\Sigma_1$. For any subset $T$ of $\Lambda_1$, we denote the set of elements of $\D_2$ corresponding to $T$ by $S_{\D_2}(T)$, i.e.
+\begin{eqnarray}
+S_{\D_2}(T):=\{X\in \D_2 ~:~ B_{\D_2}(X) \in T\}.
+\end{eqnarray}
+Note that $S_{\D_2}(\Lambda_1)=\D_2$.
+
+First we show that two different elements of ${\mathcal{S}}(\D,U,W)$ are skew. Suppose by way of contradiction that two different elements $\langle R_1,W\rangle/W$ and $\langle R_2,W\rangle/W$
+of  ${\mathcal{S}}(\D,U,W)$, have a nontrivial intersection. Note that this clearly implies that not both $R_1$ and $R_2$ are contained in $\Sigma_1$. Also, if one of $R_1$ and $R_2$ is contained in
+$\Sigma_1$, then $W$, $R_1$ and $R_2$ span the whole of $\Lambda_1$, and hence
+$\langle R_1,W\rangle/W$ and $\langle R_2,W\rangle/W$ cannot have a point in common, contradicting our hypothesis.  So the only possibility that is left is the case were both $R_1$ and $R_2$ are skew to $\Sigma_1$, since an element of $\D_1$ either intersects $\Sigma_1$ trivially, or is contained in $\Sigma_1$. By the hypothesis the dimension of the subspace spanned by $R_1$, $R_2$ and $W$ can be at most $rn+n-2$, and hence the subspace $\langle R_1,R_2\rangle$ (of dimension $2n-1$) must intersect the subspace $W$ in at least a point, say the point $x\in \langle R_1,R_2\rangle \cap W$. It follows that 
+$$\langle R_1,R_2\rangle \cap \Sigma_1=B_{\D_1}(x)\in B_{\D_1}(W).$$
+Applying $S_{\D_2}$ we obtain
+$$S_{\D_2}(\langle R_1,R_2\rangle \cap \Sigma_1)=S_{\D_2}(B_{\D_1}(x)),$$
+and since each of the arguments of $S_{\D_2}$ in the above equality, is either an element of $\D_1$ or
+spanned by elements of $\D_1$, it follows that
+\begin{eqnarray}\label{eqn:intersection}
+\langle S_{\D_2}(R_1),S_{\D_2}(R_2)\rangle \cap \Sigma_2 =\langle S_{\D_2}(B_{\D_1}(x))\rangle.
+\end{eqnarray}
+By construction we know that $R_i$ ($i=1,2$) meets $B_{\D_2}(U')$ non trivially. Also, since $U'$ has rank $ns+1$, is not contained in $\Sigma_1$ but contains $U$, it is clear that
+any subspace of $\Lambda_2$ which is skew to $\Sigma_2$, intersects $U'$ in at most one point. 
+In particular, $\langle S_{\D_2}(R_i)\rangle$ intersects $U'$ in exactly one point, say $t_i$ ($i=1,2$). Since the line $\langle t_1,t_2\rangle$ is contained in $U'$ it must intersect $U$ in a point, say $u \in U$, and hence $B_{\D_2}(u)\subset \langle B_{\D_2}(t_1),B_{\D_2}(t_2)\rangle$. But then by (\ref{eqn:intersection}) it follows that
+$$
+B_{\D_2}(u)\subset \langle B_{\D_2}(t_1),B_{\D_2}(t_2)\rangle  \cap \Sigma_2
+$$
+$$
+\subset \langle S_{\D_2}(R_1),S_{\D_2}(R_2)\rangle \cap\Sigma_2 =\langle S_{\D_2}(B_{\D_1}(x))\rangle,
+$$
+and hence $B_{\D_1}(x)$ contains a point of $B_{\D_2}(U)$. This contradicts our assumption that no element of 
+$\D_1$ intersects both $W$ and $L=B_{\D_2}(U)$. We conclude that each pair of elements of ${\mathcal{S}}(\D,U,W)$ intersect trivially.
+
+Counting the number of elements of ${\mathcal{S}}(\D,U,W)$, taking into account the previous remark that any subspace of $\Lambda_2$ which is skew to $\Sigma_2$, intersects $A$ in at most one point, we obtain $q^{sn}$ different elements of ${\mathcal{S}}(\D,U,W)$, induced by elements of $\D_1$ that intersect $L'\setminus L$. Since for each element $R\in \D_1$, intersecting $L$, we have that
+$\langle R,W\rangle /W = \Sigma_1/W$, we conclude that the set ${\mathcal{S}}(\D,U,W)$ consists of $q^{ns}+1$ skew $(n-1)$-spaces. In other words ${\mathcal{S}}(\D,U,W)$ is an $(n-1)$-spread of
+$\Lambda_1 /W \cong \PG(2n-1,q^s)$.
+
+Let $S_\infty$ denote the element $\Sigma_1/W\in {\mathcal{S}}(\D,U,W)$. To finish the proof we still need to show that  ${\mathcal{S}}(\D,U,W)$ is a semifield spread, i.e., 
+that there is a subgroup $G\leq {\mathrm{P\Gamma L}}(2n,q^s)$, fixing $S_\infty$ pointwise such that $G$ acts transitively on the other elements of ${\mathcal{S}}(\D,U,W)$.
+
+Note that each element of $\D_1$ induces an $(ns-1)$-space in $\Lambda_2$, which is partitioned by elements of $\D_2$. Denote the set of these $(ns-1)$-spaces induced by the elements of $\D_1$, by $\D_3$. Since $\D_1$ is a Desarguesian $(n-1)$-spread of $\Lambda_1$, it follows that $\D_3$ is a Desarguesian $(ns-1)$-spread of $\Lambda_2$. Again, note that each element of $\D_3$ intersects $U'$ in at most one point, and hence also each element of $\D_1$ intersects $B_{\D_2}(U')$ in at most one point. Let $H$ denote the stabiliser of $\D_1$ in ${\mathrm{P\Gamma L}}(\Lambda_1)$, and note that $H$ contains a subgroup isomorphic to ${\mathrm{P\Gamma L}}(r+1,q^{ns})$. Take any two elements $X$ and $Y$ in $B_{\D_1}(B_{\D_2}(U'))\subset \D_1$, and suppose that $X\cap B_{\D_2}(U')=\langle x\rangle$ and $Y\cap B_{\D_2}(U')=\langle y\rangle$, with $x,y\in \F_{q^s}^{rn+n}\setminus \F_{q^s}^{rn}$. Let $\psi$ be an isomorphism
+$$\psi~:~ \F_{q^s}^{rn+n} ~\rightarrow ~\F_{q^{sn}}^{r+1}$$ 
+such that 
+$$(\F_{q^s}^{rn})^\psi =\F_{q^{ns}}^{r}.$$
+Since the pointwise stabiliser $H'$ of $\F_{q^{ns}}^r$ in ${\mathrm{\Gamma L}}(r+1,q^{ns})$ acts transitively on the vectors of $\F_{q^{ns}}^{r+1}\setminus \F_{q^{ns}}^{r}$, it follows that $H'$ contains an element $\phi_{xy}$ such that $(x^\psi)^{\phi_{xy}}=y^\psi$, and since $X$ and $Y$ were arbitrary, it follows that the group $H'$ acts transitively on $\{x^\psi ~:~ \langle x \rangle \in B_{\D_2}(U')\setminus B_{\D_2}(U)\}$. 
+This implies that the group $\psi^{-1}H'\psi$ induces a subgroup of $H$, fixing $\Sigma_1$ pointwise, that acts transitively on the elements of $B_{\D_1}(B_{\D_2}(U'))$. Finally, in the quotient geometry $\Lambda_1/W$, this group induces a subgroup $G$ of order $q^{ns}$ fixing $S_\infty$ pointwise such that $G$ acts transitively on the other elements of ${\mathcal{S}}(\D,U,W)$.
+\end{proof}
+The semifield corresponding to the semifield spread ${\mathcal{S}}(\D,U,W)$ is denoted by $\S(\D,U,W)$.
+The following theorem characterises those linear sets that correspond to a finite field.
+\begin{theorem}\label{thm:field}
+If $(\D,U,W)$ is a BEL-configuration where $L$ is an element of $\D$, then ${\mathcal{S}}(\D,U,W)$ is a Desarguesian spread and $\S(\D,U,W)$ is a finite field.
+\end{theorem}
+\begin{proof}
+Applying the BEL-construction to $(\D,U,W)$ we see that $B_{\D_1}(L')$ is contained in the $(2k-1)$-dimensional subspace spanned by two elements $L$ and $R$ of $\D_1$, with $R$ an element of $B_{\D_1}(L'\setminus L)$. Since the restriction of a Desarguesian spread to any subspace spanned by some of its elements is again a Desarguesian spread, it follows that $B_{\D_1}(L')$ is a Desarguesian spread in $\langle R, L \rangle$. The projection of $\Lambda_1$ from $W$ onto $\langle R, L \rangle$ gives a Desarguesian spread in the quotient geometry $\Lambda_1/W$. The semifield corresponding to a Desarguesian spread is a field.
+\end{proof}
+
+\begin{remark}
+As in \cite[Remark 2.3]{BEL} one shows that the semifield $\S(\D,U,W)$ is independent of the choice of $U'$ in the construction.
+\end{remark}
+
+\section{The BEL-construction for semifields with given left nucleus}
+In this section we give an explicit description of a BEL-configuration for a semifield with given multiplication. This BEL-configuration is different from the one in \cite{BEL}, depending on the
+size of the left nucleus. If the left nucleus is larger than the center, then the dimension of the ambient space of the BEL-configuration given here is much smaller compared to \cite{BEL}. We remark that the same construction can be done with respect to the right nucleus.
+Since a semifield is a vector space over each of its nuclei,
+the size of a nucleus is $q^s$, with $s$ a divisor of $n$. 
+In general, if we label the elements of $\S$ by the elements of $\F_{q^n}$, then the multiplication of a
+semifield $\S$, with center $\F_q$ can be written as
+$$
+y\circ x = \sum_{i,j = 0}^{n-1}d_{ij}x^{q^i}y^{q^j},
+$$
+with $d_{ij} \in \F_{q^n}$. 
+
+In the following theorem we denote the points of $\PG(k^2-1,q^s)$ as $\langle (x_0,x_1,\ldots, x_{k-1})\rangle$ with $x_i \in \F_{q^n}$, $n=ks$. With this notation, the set 
+$$\D=\{\{\langle ( ax_0,ax_1,\ldots, a x_{k-1})\rangle ~:~ a \in \F_{q^n}^*\} ~:~\overline{x} \in\F_{q^n}^{k}\setminus \{0\}\},$$
+is a Desarguesian $(k-1)$-spread of $\PG(k^2-1,q^s)$.
+\begin{theorem}\label{thm:allsemifields}
+For every finite semifield $\S$ of order $q^n$ with left nucleus $|\N_l|=q^{s}$, $sk=n$, there exists a BEL-configuration $(\D,U,W)$ in $\PG(k^2-1,q^s)$, such that $\S=\S(\D,U,W)$.
+\end{theorem}
+\begin{proof}
+Let $\S$ be a semifield of order $q^n$ with multiplication given by 
+$$
+y\circ x = \sum_{i,j = 0}^{n-1}d_{ij}x^{q^i}y^{q^j},
+$$
+with $d_{ij} \in \F_{q^n}$. 
+Suppose $\S$ has a left nucleus of size $q^s$, $s=n/k$, and relabel the elements of $\S$, such that $\N_l = \F_{q^s} \subset \F_{q^n}$, and the center is $\F_q$. Since $(l\circ y) \circ x = l \circ (y\circ x)$, $\forall l \in \N_l$, it follows that the map
+$R_x~:~y\mapsto y\circ x$
+is linear over $\F_{q^s}$, and hence the multiplication in $\S$ may be written as
+$$
+y\circ x =\sum_{i = 0}^{n-1} \sum_{j = 0}^{k-1}c_{ij}x^{q^i}y^{q^{sj}},
+$$
+with $c_{ij} \in \F_{q^n}$.
+Define the subspace
+\begin{eqnarray}\label{W}
+\W=\{\langle ( -\sum_{i=1}^{k-1} z_i^{q^{is}},z_1,z_2,\ldots,z_{k-1})\rangle ~:~ \overline{z} \in \F_{q^n}^{k-1}\setminus\{0\}\}
+\end{eqnarray}
+and the Desarguesian $(k-1)$-spread
+\begin{eqnarray}\label{D}
+\D=\{\{\langle ( ax_0,ax_1,\ldots, a x_{k-1})\rangle ~:~ a \in \F_{q^n}^*\} ~:~\overline{x} \in\F_{q^n}^{k}\setminus \{0\}\}
+\end{eqnarray}
+in $\PG(k^2-1,q^s)$.
+First we show that the triple $(\D,U,\W)$ where the $\F_q$-linear set $L=B(U)$ is given by
+$$
+L=\{\langle(c_0(x),c_1(x)^{1/q^s},\ldots,c_{k-1}(x)^{1/q^{s(k-1)}})\rangle ~:~x\in \F_{q^n}^*\},
+$$
+and $c_j(x)=\sum_{i=0}^{n-1}c_{ij} x^{q^i}$ is a BEL-configuration in $\PG(k^2-1,q^s)$. If there is an element of $\D$ intersecting both
+$L$ and $\W$ then there exist $\overline{z} \in \F_{q^n}^{k-1}\setminus\{0\}$, $y \in \F_{q^n}^*$, and $x\in \F_{q^n}^*$ such that 
+$$
+z_j=yc_j(x)^{1/q^{sj}}, j\neq 0
+$$
+and
+$$
+- \sum_{j=1}^{k-1} z_j^{q^{js}}=yc_0(x).
+$$
+Substituting the $z_j$ in the second equation we get
+$$
+y\circ x=\sum_{i = 0}^{n-1} \sum_{j = 0}^{k-1}c_{ij}x^{q^i}y^{q^{sj}}=0,
+$$
+which implies $x=0$ or $y=0$, a contradiction. This shows that the triple $(\D,U,\W)$ is a BEL-configuration. Now extend the $\F_q$-linear set $L$ to the $\F_q$-linear set
+$$
+L':=\{\{\langle(t,c_0(x),c_1(x)^{1/q^s},\ldots,c_{k-1}(x)^{1/q^{s(k-1)}})\rangle ~:~(t,x) \in (\F_q\times \F_{q^n})\setminus\{(0,0)\}\},
+$$
+in $\PG(k^2+k-1,q^s)$. The element of $\D$ containing the point 
+$$\langle(t,c_0(x),c_1(x)^{1/q^s},\ldots,c_{k-1}(x)^{1/q^{s(k-1)}})\rangle$$ 
+is 
+$$D_x:=\{\langle(y,yc_0(x),yc_1(x)^{1/q^s},\ldots,yc_{k-1}(x)^{1/q^{s(k-1)}})\rangle~:~y \in \F_{q^n}^*\}.$$
+Calculating the quotient space $\langle D_x,\W\rangle /\W$ as a projection from $\W$ onto the subspace with the last $k-2$ coordinates equal to zero, we obtain
+$$
+\langle D_x,\W\rangle=\{
+\langle(y,yc_0(x)-\sum_{i=1}^{k-1} z_i^{q^{is}},yc_1(x)^{1/q^s}+z_1,\ldots,yc_{k-1}(x)^{1/q^{s(k-1)}}+z_{k-1})\rangle~:~
+$$
+$$
+y \in \F_{q^n}^*, \overline{z} \in \F_{q^n}^{k-1}\setminus\{0\}\}
+$$
+and hence
+$$
+\langle D_x,\W\rangle/\W=\{\langle ( y, \sum_{j = 0}^{k-1}c_j(x)y^{q^{sj}})\rangle  ~:~y \in \F_{q^n}^*\}
+$$
+Thus the semifield spread ${\mathcal{S}}(\D,U,\W)$ corresponds to a semifield with multiplication
+$y\circ x = \sum_{j = 0}^{k-1}c_j(x)y^{q^{sj}}$, i.e., the semifield $\S=\S(\D,L,\W)$.
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{On the isotopism problem}
+
+Recall that the set of semifields isotopic to a given semifield $\S$ is called the {\it isotopism class} of $\S$ and is denoted by $[\S]$. It is not difficult to see that the sizes of the nuclei of a semifield $\S$ are invariants of $[\S]$ and hence it makes sense to speak of the {\it size of the nuclei of an isotopism class $[\S]$}. Generally one is interested in the isotopism classes of semifields, since these correspond to the isomorphism classes of the corresponding projective planes (see Albert \cite{Albert1960}). But Knuth proved that the action of $S_3$ is well defined on the set of isotopism classes and we call the set of isotopism classes of semifields corresponding to the $S_3$-orbit the {\it Knuth orbit}. So instead of looking at the isotopism classes of finite semifields we might also consider the Knuth orbits of finite semifields. In general the size of the Knuth orbit is not immediately clear. However, it is straighforward to see that the Knuth orbit of a finite field has size one. The size of the Knuth orbit is also known for the semifields studied in \cite{BallLavrauw2007}, but for most other semifields its size is not known. One of the issues of the isotopism problem is not having a ``canonical" representative for an isotopism class (see e.g. \cite{Knuth1965}), and the same holds for the representation of a Knuth orbit. However what concerns the Knuth orbit, we know that the sizes of the nuclei are permuted under the action of $S_3$.  Hence, as a representative of a Knuth orbit, we may always take a semifield whose isotopism class has our favourite nucleus as its largest nucleus. In what follows we will assume this largest nucleus to be the left nucleus, but the reader should keep in mind that this is just a matter of choice.
+
+So, we distinguish the isotopy classes of semifields of order $q^n$ by the size of
+the largest nucleus, and using the action of $S_3$ on the indices of the structure constants, 
+we may assume that the representative of the Knuth orbit of $\S$ has as largest nucleus is the left nucleus, which we denote by $\N_l$. 
+The isotopism classes of semifields of order $q^n$ which have the right or middle nucleus as largest nucleus are then obtained by permuting the indices of the structure constants of
+the semifield. The following theorem solves the isotopism problem for semifields  $\S(\D,L,\W)$, with
+$\W$ defined by (\ref{W}).
+\begin{theorem}\label{thm:isotopism}
+Two semifields $\S(\D,U_1,\W)$ and $\S(\D,U_2,\W)$ of order $q^n$ and left nucleus of size $q^s$, $n=sk$, with $\W$ defined by (\ref{W}), are isotopic if and only if there exists a collineation $\phi$ of $\PG(k^2-1,q^s)$ fixing $B(\W)$ with $B(U_1)^\phi=B(U_2)$.
+\end{theorem}
+\begin{proof}
+Suppose $\S(\D,U_1,\W)$ and $\S(\D,U_2,\W)$, with $\W$ defined by (\ref{W}), are isotopic semifields with multiplication given by 
+$$y\circ x =\sum_{i = 0}^{n-1} \sum_{j = 0}^{k-1}c_{ij}x^{q^i}y^{q^{sj}}
+= \sum_{j = 0}^{k-1}c_j(x)y^{q^{sj}} ~\mbox{and}$$
+$$y\circ' x =\sum_{i = 0}^{n-1} \sum_{j = 0}^{k-1}c'_{ij}x^{q^i}y^{q^{sj}}
+= \sum_{j = 0}^{k-1}c'_j(x)y^{q^{sj}}.$$
+The spreads of $\PG(2k-1,q^s)$, $\mathcal S$ and $\mathcal S'$, corresponding to $\S$ and $\S'$, consist of the subspace $S_\infty=S'_\infty=\{(0,y)~:~ y \in \F_{q^n}^*\}$, together with the subspaces
+$$
+S_x=\{(y,y\circ x)~:~y \in \F_{q^n}^*\}, x \in \F_{q^n}, ~\mbox{and}
+$$
+$$
+S'_x=\{(y,y\circ' x)~:~y \in \F_{q^n}^*\}, x \in \F_{q^n},
+$$
+respectively.
+The corresponding $\F_q$-linear sets $L_1$ and $L_2$ in $\PG(k^2-1,q^s)$, as in the proof of Theorem \ref{thm:allsemifields}
+are given by
+$$
+L_1=\{\langle(c_0(x),c_1(x)^{1/q^s},\ldots,c_{k-1}(x)^{1/q^{s(k-1)}})\rangle ~:~x\in \F_{q^n}^*\}, ~\mbox{and}
+$$
+$$
+L_2=\{\langle(c'_0(x),c'_1(x)^{1/q^s},\ldots,c'_{k-1}(x)^{1/q^{s(k-1)}})\rangle ~:~x\in \F_{q^n}^*\},
+$$
+respectively.
+ As in the proof of \cite[Theorem 17]{Lavrauw2008}, we use the collineation $\Psi$ between $\PG(k^2-1,q^s)$ and $\PG(M_k(\F_{q^s}))$ induced by the isomorphism between $V(k^2,q^s)$ and $M_k(\F_{q^s})$ defined by
+$$
+(x_0,x_1,\ldots,x_{k-1}) ~\mapsto ~U^{-1}A_{(x_0,x_1^{q^s},\ldots,x_{k-1}^{q^{sk-1}})} U,
+$$
+with
+\begin{displaymath}
+U:=\left (
+\begin{array}{llll}
+u_0 & u_1 & \ldots & u_{k-1}\\
+u_0^{q^s} & u_1^{q^s} & \ldots & u_{k-1}^{q^s}\\
+\vdots & \vdots & & \vdots \\
+u_0^{q^{sk-1}} & u_1^{q^{sk-1}}&  \ldots & u_{k-1}^{q^{sk-1}}\\
+\end{array}
+\right ), ~\mbox{and}
+\end{displaymath}
+\begin{displaymath}
+A_{(y_0,y_1,\ldots,y_{k-1})}:=\left (
+\begin{array}{llll}
+y_0 & y_1 & \ldots & y_{k-1}\\
+y_{k-1}^{q^s} & y_0^{q^s}& \ldots &y_{k-2}^{q^s}\\
+\vdots & \vdots & & \vdots \\
+y_1^{q^{sk-1}} & y_2^{q^{sk-1}} &\ldots &y_0^{q^{sk-1}}\\
+\end{array}
+\right ).
+\end{displaymath}
+To conclude the proof, apply exactly the same reasoning as in the proof of \cite[Theorem 17]{Lavrauw2008}.
+\end{proof}
+The following theorem is a refinement of two results proved in \cite{Lavrauw2008} and links the set of points of $B_\D(\W)$ to the Segre variety ${\mathcal S}_{k,k}(q^s)$.
+\begin{theorem}\label{thm:link}
+The set of points $B_\D(\W)$ with $\D$ and $\W$ as in (\ref{D}) and (\ref{W}), respectively, is projectively equivalent to the set of points of the $(k-2)$th secant variety to a Segre variety ${\mathcal S}_{k,k}(q^s)$ in $\PG(k^2-1,q^s)$, and the elements of $B_\D(\W)$ contain a subset that is projectively equivalent to one of the two families of maximal subspaces contained in ${\mathcal S}_{k,k}(q^s)$.
+\end{theorem}
+\begin{proof}
+The first part of the statement is \cite[Theorem 11]{Lavrauw2008}. Let $\Psi$ denote the associated collineation, i.e. $B_\D(\W)^\Psi$ covers the $(k-2)$th secant variety to a Segre variety ${\mathcal S}_{k,k}(q^s)$ in $\PG(k^2-1,q^s)$.
+Let ${\mathcal{F}}_1$ and ${\mathcal{F}}_2$ denote the two families of maximal subspaces contained in ${\mathcal S}_{k,k}(q^s)$.
+It follows from the proof of \cite[Corollary 12]{Lavrauw2008} that a $(k-1)$-space $R^\Psi$ with $R\in B_\D(\W)$ is either contained in ${\mathcal S}_{k,k}(q^s)$ or is skew to ${\mathcal S}_{k,k}(q^s)$. Since $B_\D(\W)^\Psi$ consists of $(k-1)$-dimensional subspaces and each two elements of $B_\D(\W)^\Psi$ are skew, $B_\D(\W)^\Psi$ contains a subset that coincides with one of the two families ${\mathcal{F}}_1$ or ${\mathcal{F}}_2$.
+\end{proof}
+We denote the subgroup of ${\mathrm{P\Gamma L}}(k^2,q^s)$ fixing both families of maximal subspaces contained in ${\mathcal S}_{k,k}(q^s)$ by $H({\mathcal S}_{k,k}(q^s))$. 
+The above link between the set of points of $B_\D(\W)$ to the Segre variety ${\mathcal S}_{k,k}(q^s)$ gives the equivalence between the algebraic and geometric approach to the isotopism problem for finite semifields. In case the semifield is symplectic, the Segre variety in this equivalence becomes a Veronesean variety, because of the extra symmetry; for more on the symplectic case we refer to \cite{LuMaPoTr200*}.
+\begin{cor}
+There is a one-to-one correspondence between the isotopism classes of finite semifields of order $q^n$, with center $\F_q$ and left nucleus of order $q^s$, $n=ks$, and the orbits of the action of $H({\mathcal{S}}_{k,k}(q^s))$ on the $\F_q$-linear sets of rank $n$ in $\PG(k^2-1,q^s)$ skew to the $(k-2)$th secant variety $\Omega_{k-2}(q^s)$ of ${\mathcal S}_{k,k}(q^s)$.
+\end{cor}
+\begin{proof}
+Combine Theorem \ref{thm:isotopism} and Theorem \ref{thm:link}.
+\end{proof}
+As an application of the BEL-construction we have the following characterisation of the isotopism class of a finite field.
+\begin{theorem}
+The  $H({\mathcal S}_{k,k}(q^s))$-orbit, corresponding to the isotopism class of a finite field, is the orbit of a $(k-1)$-dimensional subspace, skew to the $(k-2)$th secant variety $\Omega_{k-2}(q^s)$ of ${\mathcal S}_{k,k}(q^s)$, that belongs to a Desarguesian spread, containing one of the two families of maximal subspaces of ${\mathcal S}_{k,k}(q^s)$.
+\end{theorem}
+\begin{proof}
+Let $L=B(U)$ be a $(k-1)$-dimensional subspace belonging to the Desarguesian spread $\D$ containing one of the two families of maximal subspaces of ${\mathcal S}_{k,k}(q^s)$, and let $W$ be any $(k^2-k-1)$-dimensional subspace contained in the $(k-2)$th secant variety to a Segre variety ${\mathcal S}_{k,k}(q^s)$. This subspace exists because of Theorem \ref{thm:link}. Then $(\D,U,W)$ is a BEL-configuration with $B(U)\in \D$. It follows from Theorem \ref{thm:field} that $\S(\D,U,W)$ is a field.
+\end{proof}
+\bibliographystyle{plain}
+\begin{thebibliography}{}
+\bibitem{Albert1960}
+{\sc A. A. Albert}, Finite division algebras and finite planes.  1960  Proc. Sympos. Appl. Math., Vol. 10  pp. 53--70.
+\bibitem{BEL} 
+{\sc S. Ball, G. Ebert, M. Lavrauw}, A geometric construction of finite semifields.  J. Algebra  311  (2007),  no. 1, 117--129.
+\bibitem{BallLavrauw2007}
+{\sc S. Ball, M. Lavrauw}, On the Hughes-Kleinfeld and Knuth's semifields two-dimensional over a weak nucleus.  Des. Codes Cryptogr.  44  (2007),  no. 1-3, 63--67. 
+\bibitem{CaPoTr2004}
+{\sc I. Cardinali, O. Polverino, R. Trombetti}, Semifield planes of order $q\sp 4$ with kernel $F\sb {q\sp 2}$ and center $F\sb q$.  European J. Combin.  27  (2006),  no. 6, 940--961.
+\bibitem{Dickson1906}
+{\sc L. E. Dickson}, Linear algebras in which division is always uniquely possible.  Trans. Amer. Math. Soc.  7  (1906),  no. 3, 370--390.
+\bibitem{Knuth1965}
+{\sc D. E. Knuth}, Finite semifields and projective planes.  J. Algebra  2  1965 182--217.
+\bibitem{Lavrauw2008}
+{\sc M. Lavrauw}, On the isotopism classes of finite semifields.  Finite Fields Appl.  14  (2008),  no. 4, 897--910.
+\bibitem{Lunardon1998}
+{\sc G. Lunardon}, Normal spreads.  Geom. Dedicata  75  (1999),  no. 3, 245--261.
+\bibitem{LuMaPoTr200*}
+{\sc G. Lunardon, G. Marino, O. Polverino, R. Trombetti}, Symplectic spreads and quadric veronesean. Preprint.
+\bibitem{MaPoTr2007} {\sc G. Marino, O. Polverino and R. Trombetti}: On ${\mathbb F}_q$--linear sets of $PG(3,q^3)$ and semifields,
+{\it J. Combin. Theory Ser. A} {\bf 114} (2007), 769--788.
+\bibitem{Polverino200*}
+{\sc O. Polverino}, Linear sets. Preprint.
+\end{thebibliography}
+
+\vspace{1 cm}
+
+Corresponding author:\\
+\\
+Michel Lavrauw\\
+Department of Pure Mathematics and Computer Algebra\\
+Ghent University\\
+Building S22,\\
+Krijgslaan 281, 9000 Gent,\\
+Belgium.\\
+ml@cage.ugent.be\\
+\end{document}
